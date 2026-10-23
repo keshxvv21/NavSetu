@@ -1,0 +1,35 @@
+{
+  "name": "navsetu-1",
+  "version": "1.0.0",
+  "description": "**24-Hour Hackathon Build Plan (v3: Next.js + Supabase, with a tamper-evident justification PDF)**\r Smart India Hackathon 2026 | Features, screens, stack, workflow, structure, deployment",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "lib": "lib"
+  },
+  "scripts": {
+    "seed": "tsx scripts/seed.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/keshxvv21/NavSetu.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/keshxvv21/NavSetu/issues"
+  },
+  "homepage": "https://github.com/keshxvv21/NavSetu#readme",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.118.0",
+    "dotenv": "^18.0.9"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}

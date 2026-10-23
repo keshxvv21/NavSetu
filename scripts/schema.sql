@@ -1,0 +1,3 @@
+-- TODO: run in the Supabase SQL editor.
+-- Tables: users, departments, startups, problems, applications, pilots, milestones, contracts (with record_hash), adoptions
+-- Unique keys: applications(problem_id, startup_id), adoptions(contract_id, department_id)

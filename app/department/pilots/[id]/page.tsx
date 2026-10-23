@@ -155,7 +155,7 @@ export default function PilotTrackerPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[50vh]">
-        <div className="w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-4 border-black border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -165,7 +165,7 @@ export default function PilotTrackerPage() {
       <div className="space-y-4">
         <Link
           href="/department/dashboard"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-zinc-600 hover:text-black"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Back to Dashboard</span>
@@ -193,7 +193,7 @@ export default function PilotTrackerPage() {
       <div className="flex items-center justify-between">
         <Link
           href="/department/dashboard"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-zinc-600 hover:text-black transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Back to Department Command Center</span>
@@ -203,14 +203,14 @@ export default function PilotTrackerPage() {
           <div className="flex items-center gap-2">
             <Link
               href={`/contracts/${pilot.contract_id || pilot.id}`}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-800 border border-slate-300 hover:bg-slate-50 transition-colors shadow-xs"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-white text-zinc-900 border border-zinc-300 hover:bg-zinc-100 transition-colors shadow-xs"
             >
-              <FileText className="w-3.5 h-3.5 text-blue-700" />
+              <FileText className="w-3.5 h-3.5 text-zinc-900" />
               <span>View Contract & PDF</span>
             </Link>
             <Link
               href={`/verify/${pilot.contract_id || pilot.id}`}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-700 hover:bg-emerald-800 text-white shadow-xs transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-black hover:bg-zinc-800 text-white shadow-xs transition-colors"
             >
               <ShieldCheck className="w-3.5 h-3.5" />
               <span>Public Audit Verification</span>
@@ -221,27 +221,27 @@ export default function PilotTrackerPage() {
 
       {/* Converted Alert Banner */}
       {isConverted && (
-        <div className="p-5 sm:p-6 rounded-xl bg-emerald-50 border border-emerald-300 shadow-xs space-y-3">
+        <div className="p-5 sm:p-6 rounded-2xl bg-zinc-950 text-white border border-zinc-800 shadow-xs space-y-3">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="flex items-start gap-3.5">
-              <div className="p-3 rounded-xl bg-emerald-100 text-emerald-800 shrink-0">
+              <div className="p-3 rounded-xl bg-zinc-800 text-white shrink-0">
                 <Award className="w-7 h-7" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold uppercase tracking-wider text-emerald-800">
+                  <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">
                     Officially Converted & Sealed
                   </span>
-                  <span className="text-xs font-mono px-2 py-0.5 rounded bg-emerald-100 text-emerald-900 font-bold border border-emerald-200">
+                  <span className="text-xs font-mono px-2 py-0.5 rounded bg-zinc-800 text-white font-bold border border-zinc-700">
                     {pilot.contract_id}
                   </span>
                 </div>
-                <h2 className="text-lg font-bold text-slate-900 mt-0.5">
+                <h2 className="text-lg font-bold text-white mt-0.5">
                   Direct Procurement Contract Awarded
                 </h2>
-                <p className="text-xs text-slate-700 font-medium">
+                <p className="text-xs text-zinc-400 font-medium">
                   Record is read-only and sealed with cryptographic SHA-256 fingerprint under{' '}
-                  <span className="text-blue-800 font-bold">{pilot.rule_reference}</span>.
+                  <span className="text-white font-bold underline">{pilot.rule_reference}</span>.
                 </p>
               </div>
             </div>
@@ -249,7 +249,7 @@ export default function PilotTrackerPage() {
             <div className="flex items-center gap-2 shrink-0">
               <Link
                 href={`/contracts/${pilot.contract_id || pilot.id}`}
-                className="px-4 py-2 rounded-lg text-xs font-bold text-white bg-emerald-700 hover:bg-emerald-800 shadow-xs transition-colors flex items-center gap-1.5"
+                className="px-4 py-2 rounded-xl text-xs font-bold text-zinc-900 bg-white hover:bg-zinc-100 shadow-xs transition-colors flex items-center gap-1.5"
               >
                 <span>Download Justification PDF</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -259,15 +259,15 @@ export default function PilotTrackerPage() {
 
           {/* Cryptographic Hash Bar */}
           {pilot.record_hash && (
-            <div className="mt-2 pt-3 border-t border-emerald-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs font-mono">
-              <div className="flex items-center gap-2 text-slate-800">
-                <span className="text-slate-900 font-bold uppercase text-[10px]">Canonical SHA-256:</span>
-                <span className="text-slate-900 font-bold select-all break-all bg-white px-2 py-1 rounded border border-slate-200">
+            <div className="mt-2 pt-3 border-t border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs font-mono">
+              <div className="flex items-center gap-2 text-zinc-300">
+                <span className="text-zinc-400 font-bold uppercase text-[10px]">Canonical SHA-256:</span>
+                <span className="text-white font-bold select-all break-all bg-zinc-900 px-2 py-1 rounded border border-zinc-700">
                   {pilot.record_hash}
                 </span>
               </div>
-              <div className="text-xs text-emerald-800 font-bold flex items-center gap-1 font-sans shrink-0">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+              <div className="text-xs text-zinc-200 font-bold flex items-center gap-1 font-sans shrink-0">
+                <CheckCircle2 className="w-3.5 h-3.5 text-white" />
                 <span>Verified Match</span>
               </div>
             </div>
@@ -276,31 +276,31 @@ export default function PilotTrackerPage() {
       )}
 
       {/* Main Pilot Card */}
-      <div className="gov-card p-6 sm:p-8 bg-white border border-slate-200 shadow-xs space-y-6">
+      <div className="p-6 sm:p-8 bg-white rounded-2xl border border-zinc-200 shadow-xs space-y-6">
         <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-5">
           <div className="space-y-2 flex-1">
             <div className="flex flex-wrap items-center gap-2.5">
               <StatusBadge status={pilot.status} size="md" />
-              <span className="text-xs font-mono font-bold text-slate-700 px-2.5 py-0.5 rounded bg-slate-100 border border-slate-200">
+              <span className="text-xs font-mono font-bold text-zinc-700 px-2.5 py-0.5 rounded bg-zinc-100 border border-zinc-200">
                 Pilot ID: {pilot.id}
               </span>
-              <span className="text-xs text-blue-700 font-bold flex items-center gap-1">
+              <span className="text-xs text-zinc-900 font-bold flex items-center gap-1">
                 <Building2 className="w-3.5 h-3.5" />
                 <span>{pilot.department_name}</span>
               </span>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 tracking-tight">
               {pilot.problem_title}
             </h1>
 
-            <div className="flex flex-wrap items-center gap-4 text-xs text-slate-600 pt-1 font-medium">
+            <div className="flex flex-wrap items-center gap-4 text-xs text-zinc-600 pt-1 font-medium">
               <div>
-                Partner Startup: <strong className="text-slate-900 font-bold text-sm">{pilot.startup_name}</strong>
+                Partner Startup: <strong className="text-zinc-900 font-bold text-sm">{pilot.startup_name}</strong>
               </div>
               {pilot.startup_dpiit && (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-300 text-xs font-bold">
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-zinc-100 text-zinc-900 border border-zinc-300 text-xs font-semibold">
+                  <ShieldCheck className="w-3.5 h-3.5 text-zinc-900" />
                   <span>DPIIT {pilot.startup_dpiit}</span>
                 </span>
               )}
@@ -308,58 +308,58 @@ export default function PilotTrackerPage() {
           </div>
 
           {/* Quick Metrics */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 shrink-0 p-4 rounded-lg bg-slate-50 border border-slate-200 text-xs font-medium">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 shrink-0 p-4 rounded-xl bg-zinc-50 border border-zinc-200 text-xs font-medium">
             <div>
-              <span className="text-slate-500 block text-[10px] uppercase font-bold">Authorized Budget</span>
-              <span className="text-sm font-extrabold text-emerald-800 font-mono">
+              <span className="text-zinc-500 block text-[10px] uppercase font-bold">Authorized Budget</span>
+              <span className="text-sm font-extrabold text-zinc-900 font-mono">
                 ₹{pilot.budget.toLocaleString('en-IN')}
               </span>
             </div>
             <div>
-              <span className="text-slate-500 block text-[10px] uppercase font-bold">Scheduled Start</span>
-              <span className="text-xs font-bold text-slate-900">{pilot.start_date}</span>
+              <span className="text-zinc-500 block text-[10px] uppercase font-bold">Scheduled Start</span>
+              <span className="text-xs font-bold text-zinc-900">{pilot.start_date}</span>
             </div>
             <div>
-              <span className="text-slate-500 block text-[10px] uppercase font-bold">Pilot Deadline</span>
-              <span className="text-xs font-bold text-slate-900">{pilot.end_date}</span>
+              <span className="text-zinc-500 block text-[10px] uppercase font-bold">Pilot Deadline</span>
+              <span className="text-xs font-bold text-zinc-900">{pilot.end_date}</span>
             </div>
           </div>
         </div>
 
         {/* Milestone Scorecard & 70% Progress Indicator */}
-        <div className="pt-4 border-t border-slate-200 space-y-3">
+        <div className="pt-4 border-t border-zinc-200 space-y-3">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs font-medium">
             <div className="flex items-center gap-3">
-              <span className="font-bold text-slate-900">Target Completion Scorecard:</span>
-              <span className="text-slate-600">
-                <strong className="text-emerald-700">{metCount} Met</strong> •{' '}
-                <strong className="text-rose-700">{missedCount} Missed</strong> •{' '}
-                <strong className="text-sky-700">{unreviewedCount} Awaiting Review</strong>
+              <span className="font-bold text-zinc-900">Target Completion Scorecard:</span>
+              <span className="text-zinc-600">
+                <strong className="text-zinc-900">{metCount} Met</strong> •{' '}
+                <strong className="text-zinc-500">{missedCount} Missed</strong> •{' '}
+                <strong className="text-zinc-700">{unreviewedCount} Awaiting Review</strong>
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-slate-600">Current Success Rate:</span>
-              <span className={`font-bold font-mono text-sm ${successRate >= 70 ? 'text-emerald-800' : 'text-amber-800'}`}>
+              <span className="text-zinc-600">Current Success Rate:</span>
+              <span className="font-bold font-mono text-sm text-zinc-900">
                 {successRate}%
               </span>
-              <span className="text-slate-500 text-[11px]">(70% statutory bar)</span>
+              <span className="text-zinc-500 text-[11px]">(70% statutory bar)</span>
             </div>
           </div>
 
           {/* Progress Bar with 70% marker */}
           <div className="relative pt-1">
-            <div className="w-full h-3 rounded-full bg-slate-100 border border-slate-200 overflow-hidden relative">
+            <div className="w-full h-3 rounded-full bg-zinc-100 border border-zinc-300 overflow-hidden relative">
               <div
                 className={`h-full transition-all duration-300 ${
                   successRate >= 70
-                    ? 'bg-emerald-600'
-                    : 'bg-amber-500'
+                    ? 'bg-black'
+                    : 'bg-zinc-500'
                 }`}
                 style={{ width: `${successRate}%` }}
               />
             </div>
             <div
-              className="absolute top-0 bottom-0 w-0.5 bg-slate-400 pointer-events-none"
+              className="absolute top-0 bottom-0 w-0.5 bg-zinc-400 pointer-events-none"
               style={{ left: '70%' }}
               title="70% Statutory Conversion Threshold"
             />
@@ -371,11 +371,11 @@ export default function PilotTrackerPage() {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-              <ShieldCheck className="w-5 h-5 text-blue-700" />
+            <h2 className="text-lg font-bold text-zinc-900 flex items-center gap-2">
+              <ShieldCheck className="w-5 h-5 text-zinc-900" />
               <span>Conversion Audit Engine (Section 10)</span>
             </h2>
-            <p className="text-xs text-slate-600 font-medium">
+            <p className="text-xs text-zinc-600 font-medium">
               Real-time programmatic check of all 5 conversion rules before GFR direct contract generation.
             </p>
           </div>
@@ -385,10 +385,10 @@ export default function PilotTrackerPage() {
               <button
                 type="button"
                 onClick={handleRunConversionCheck}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 transition-colors shadow-xs"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-white hover:bg-zinc-100 text-zinc-900 border border-zinc-300 transition-colors shadow-xs"
                 title="Re-run compliance evaluation"
               >
-                <RefreshCw className="w-3.5 h-3.5 text-slate-500" />
+                <RefreshCw className="w-3.5 h-3.5 text-zinc-600" />
                 <span>Evaluate Rules</span>
               </button>
 
@@ -400,10 +400,10 @@ export default function PilotTrackerPage() {
                     setShowConvertModal(true);
                   }
                 }}
-                className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold text-white shadow-xs transition-colors ${
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white shadow-xs transition-colors ${
                   conversionReport?.ok
-                    ? 'bg-emerald-700 hover:bg-emerald-800'
-                    : 'bg-slate-700 hover:bg-slate-800'
+                    ? 'bg-black hover:bg-zinc-800'
+                    : 'bg-zinc-800 hover:bg-zinc-900'
                 }`}
               >
                 <Award className="w-4 h-4" />
@@ -425,18 +425,18 @@ export default function PilotTrackerPage() {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-blue-700" />
+            <h2 className="text-lg font-bold text-zinc-900 flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-zinc-900" />
               <span>Pilot Trial Milestones ({pilot.milestones.length})</span>
             </h2>
-            <p className="text-xs text-slate-600 font-medium">
+            <p className="text-xs text-zinc-600 font-medium">
               Review submitted evidence links against objective targets. Mark each milestone as Met or Missed.
             </p>
           </div>
 
           {isConverted && (
-            <div className="flex items-center gap-1 text-xs font-bold text-slate-600 bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200">
-              <Lock className="w-3.5 h-3.5 text-slate-500" />
+            <div className="flex items-center gap-1 text-xs font-bold text-zinc-700 bg-zinc-100 px-2.5 py-1 rounded-xl border border-zinc-200">
+              <Lock className="w-3.5 h-3.5 text-zinc-500" />
               <span>Locked (Read-Only after Conversion)</span>
             </div>
           )}
@@ -459,36 +459,36 @@ export default function PilotTrackerPage() {
 
       {/* CONVERSION MODAL */}
       {showConvertModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150">
-          <div className="w-full max-w-xl rounded-xl border border-slate-300 p-6 sm:p-8 space-y-6 bg-white shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150">
+          <div className="w-full max-w-xl rounded-2xl border border-zinc-300 p-6 sm:p-8 space-y-6 bg-white shadow-2xl">
             <div className="flex items-start justify-between">
               <div>
-                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-emerald-800">
+                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-zinc-900">
                   <ShieldCheck className="w-4 h-4" />
                   <span>Statutory Conversion Execution</span>
                 </div>
-                <h3 className="text-xl sm:text-2xl font-bold text-slate-900 mt-1">
+                <h3 className="text-xl sm:text-2xl font-bold text-zinc-900 mt-1">
                   Issue Direct Public Contract
                 </h3>
-                <p className="text-xs text-slate-600 mt-0.5 font-medium">
+                <p className="text-xs text-zinc-600 mt-0.5 font-medium">
                   Convert this successful trial into an official government contract with an immutable cryptographic SHA-256 hash.
                 </p>
               </div>
               <button
                 onClick={() => setShowConvertModal(false)}
-                className="text-slate-400 hover:text-slate-700 p-1 rounded-lg text-lg font-bold"
+                className="text-zinc-400 hover:text-black p-1 rounded-lg text-lg font-bold"
               >
                 ✕
               </button>
             </div>
 
             {/* Compliance Confirmation */}
-            <div className="p-4 rounded-lg bg-emerald-50 border border-emerald-300 text-xs text-emerald-950 space-y-1 font-medium">
-              <div className="font-bold flex items-center gap-1.5 text-emerald-800">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+            <div className="p-4 rounded-xl bg-zinc-100 border border-zinc-300 text-xs text-zinc-900 space-y-1 font-medium">
+              <div className="font-bold flex items-center gap-1.5 text-black">
+                <CheckCircle2 className="w-4 h-4 text-zinc-900" />
                 <span>All 5 Section 10 Verification Criteria Verified:</span>
               </div>
-              <p className="text-slate-700">
+              <p className="text-zinc-700">
                 • Pilot is active • All milestones evaluated • Success rate {successRate}% &gt;= 70% threshold • Within budget cap
               </p>
             </div>
@@ -496,45 +496,45 @@ export default function PilotTrackerPage() {
             {/* Input Contract Value */}
             <div className="space-y-4">
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center justify-between">
+                <label className="text-xs font-bold text-zinc-900 uppercase tracking-wider flex items-center justify-between">
                   <span>Final Award Contract Value (INR)</span>
-                  <span className="text-[11px] text-slate-500 font-mono font-normal">Max Cap: ₹{pilot.budget.toLocaleString('en-IN')}</span>
+                  <span className="text-[11px] text-zinc-500 font-mono font-normal">Max Cap: ₹{pilot.budget.toLocaleString('en-IN')}</span>
                 </label>
                 <div className="relative">
-                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 font-mono text-sm font-bold">₹</span>
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500 font-mono text-sm font-bold">₹</span>
                   <input
                     type="number"
                     max={pilot.budget}
                     value={contractValue}
                     onChange={(e) => setContractValue(Number(e.target.value))}
-                    className="w-full bg-white border border-slate-300 rounded-lg pl-8 pr-4 py-2.5 text-sm text-slate-900 font-mono font-bold focus:outline-none focus:border-blue-600"
+                    className="w-full bg-white border border-zinc-300 rounded-xl pl-8 pr-4 py-2.5 text-sm text-zinc-900 font-mono font-bold focus:outline-none focus:border-black"
                   />
                 </div>
               </div>
 
               {/* Statutory Rule Reference */}
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+                <label className="text-xs font-bold text-zinc-900 uppercase tracking-wider">
                   Statutory Rule Reference (Printed on Justification PDF)
                 </label>
                 <input
                   type="text"
                   value={ruleReference}
                   onChange={(e) => setRuleReference(e.target.value)}
-                  className="w-full bg-white border border-slate-300 rounded-lg px-4 py-2.5 text-xs text-slate-900 font-medium focus:outline-none focus:border-blue-600"
+                  className="w-full bg-white border border-zinc-300 rounded-xl px-4 py-2.5 text-xs text-zinc-900 font-medium focus:outline-none focus:border-black"
                 />
-                <span className="text-[11px] text-slate-500 font-medium">
+                <span className="text-[11px] text-zinc-500 font-medium">
                   Section 8 & 21 requirement: Cited on justification PDF to ensure audit immunity.
                 </span>
               </div>
             </div>
 
             {/* Actions */}
-            <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-200">
+            <div className="flex items-center justify-end gap-3 pt-3 border-t border-zinc-200">
               <button
                 type="button"
                 onClick={() => setShowConvertModal(false)}
-                className="px-4 py-2 rounded-lg text-xs font-bold text-slate-700 hover:text-slate-900 bg-white border border-slate-300 shadow-xs"
+                className="px-4 py-2 rounded-xl text-xs font-bold text-zinc-700 hover:text-black bg-white border border-zinc-300 shadow-xs"
               >
                 Cancel
               </button>
@@ -542,7 +542,7 @@ export default function PilotTrackerPage() {
                 type="button"
                 disabled={isConverting}
                 onClick={handleConvert}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-xs font-bold text-white bg-emerald-700 hover:bg-emerald-800 shadow-xs disabled:opacity-50"
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-black hover:bg-zinc-800 shadow-xs disabled:opacity-50"
               >
                 {isConverting ? (
                   <>

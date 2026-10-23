@@ -12,26 +12,79 @@ import {
   INITIAL_PILOTS,
 } from './mockData';
 import { ConversionCheckReport, RuleCheckResult } from '@/components/ConversionResult';
+import { buildRecord, hashRecord } from '@/lib/services/recordHashService';
 
 export type { Problem, Pilot, Milestone, Application, Department, Startup };
 
+export interface Adoption {
+  id: string;
+  contract_id: string;
+  department_id: string;
+  department_name: string;
+  adopted_at: string;
+  pilot_title?: string;
+  startup_name?: string;
+  contract_value?: number;
+  sector?: string;
+  notes?: string;
+}
+
 const STORAGE_KEY = 'navsetu_state_v1';
 
-interface AppState {
+export interface AppState {
   departments: Department[];
   startups: Startup[];
   problems: Problem[];
   applications: Application[];
   pilots: Pilot[];
+  adoptions: Adoption[];
+}
+
+const INITIAL_ADOPTIONS: Adoption[] = [
+  {
+    id: 'adopt-301',
+    contract_id: 'CNT-2026-JAL-0881',
+    department_id: 'dept-2',
+    department_name: 'Ministry of Housing and Urban Affairs (Smart Cities Mission)',
+    adopted_at: '2026-10-18T14:30:00Z',
+    pilot_title: 'Satellite Radar-Assisted Artificial Aquifer Recharge Site Identification',
+    startup_name: 'AquaSense Analytics Pvt Ltd',
+    contract_value: 1150000,
+    sector: 'Water & Sanitation',
+    notes: 'Direct adoption under GFR Rule 149(viii) for 8 smart city groundwater recharge zones.',
+  },
+];
+
+// Ensure Pilot A's record hash is accurate at init
+function ensurePilotAHash(pilots: Pilot[]): void {
+  const pilotA = pilots.find((p) => p.id === 'pilot-a-finished');
+  if (pilotA && pilotA.contract_id) {
+    const canonical = buildRecord({
+      contractId: pilotA.contract_id,
+      department: pilotA.department_name || 'Dept. of Drinking Water & Sanitation',
+      startup: pilotA.startup_name || 'AquaSense Analytics Pvt Ltd',
+      problem: pilotA.problem_title || 'Satellite Radar-Assisted Artificial Aquifer Recharge Site Identification',
+      startDate: pilotA.start_date,
+      endDate: pilotA.end_date,
+      budget: pilotA.budget,
+      contractValue: pilotA.contract_value || pilotA.budget,
+      ruleReference: pilotA.rule_reference || 'Rule 149(viii) GFR 2017 / Startup Runway Mandate',
+      milestones: pilotA.milestones,
+    });
+    pilotA.record_hash = hashRecord(canonical);
+  }
 }
 
 function getInitialState(): AppState {
+  const pilots = JSON.parse(JSON.stringify(INITIAL_PILOTS));
+  ensurePilotAHash(pilots);
   return {
-    departments: INITIAL_DEPARTMENTS,
-    startups: INITIAL_STARTUPS,
-    problems: INITIAL_PROBLEMS,
-    applications: INITIAL_APPLICATIONS,
-    pilots: INITIAL_PILOTS,
+    departments: JSON.parse(JSON.stringify(INITIAL_DEPARTMENTS)),
+    startups: JSON.parse(JSON.stringify(INITIAL_STARTUPS)),
+    problems: JSON.parse(JSON.stringify(INITIAL_PROBLEMS)),
+    applications: JSON.parse(JSON.stringify(INITIAL_APPLICATIONS)),
+    pilots,
+    adoptions: JSON.parse(JSON.stringify(INITIAL_ADOPTIONS)),
   };
 }
 
@@ -52,7 +105,11 @@ export function loadState(): AppState {
       saveState(state);
       return state;
     }
-    return JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+    if (!parsed.adoptions) {
+      parsed.adoptions = INITIAL_ADOPTIONS;
+    }
+    return parsed;
   } catch (e) {
     console.error('Error loading state from localStorage:', e);
     return getInitialState();
@@ -78,8 +135,35 @@ export function resetState(): AppState {
   return state;
 }
 
+// ----------------------------------------------------
+// Startups & Verification
+// ----------------------------------------------------
 
-// 1. Get problems (filterable by department)
+export function getStartups(): Startup[] {
+  const state = loadState();
+  return state.startups;
+}
+
+export function getStartupById(id: string): Startup | undefined {
+  const state = loadState();
+  return state.startups.find((s) => s.id === id);
+}
+
+export function updateStartupVerification(id: string, verified: boolean): Startup {
+  const state = loadState();
+  const startup = state.startups.find((s) => s.id === id);
+  if (!startup) {
+    throw new Error('Startup not found');
+  }
+  startup.verified = verified;
+  saveState(state);
+  return startup;
+}
+
+// ----------------------------------------------------
+// Problems
+// ----------------------------------------------------
+
 export function getProblems(departmentId?: string): Problem[] {
   const state = loadState();
   if (departmentId) {
@@ -88,13 +172,11 @@ export function getProblems(departmentId?: string): Problem[] {
   return state.problems;
 }
 
-// 2. Get problem by ID
 export function getProblemById(id: string): Problem | undefined {
   const state = loadState();
   return state.problems.find((p) => p.id === id);
 }
 
-// 3. Post a new problem (Department action)
 export function createProblem(params: {
   department_id: string;
   department_name?: string;
@@ -106,7 +188,7 @@ export function createProblem(params: {
 }): Problem {
   const state = loadState();
   const id = `prob-${Date.now().toString(36)}`;
-  
+
   const newProblem: Problem = {
     id,
     department_id: params.department_id,
@@ -126,13 +208,74 @@ export function createProblem(params: {
   return newProblem;
 }
 
-// 4. Get applications for a problem
+// ----------------------------------------------------
+// Applications
+// ----------------------------------------------------
+
 export function getApplicationsForProblem(problemId: string): Application[] {
   const state = loadState();
   return state.applications.filter((a) => a.problem_id === problemId);
 }
 
-// 5. Select applicant & start pilot (F6 in README)
+export function getApplicationsForStartup(startupId: string): Application[] {
+  const state = loadState();
+  return state.applications.filter((a) => a.startup_id === startupId);
+}
+
+export function createApplication(params: {
+  problem_id: string;
+  startup_id: string;
+  pitch: string;
+  proposed_budget: number;
+  pilot_timeline_weeks: number;
+}): Application {
+  const state = loadState();
+
+  const problem = state.problems.find((p) => p.id === params.problem_id);
+  if (!problem) {
+    throw new Error('Problem challenge not found');
+  }
+
+  const startup = state.startups.find((s) => s.id === params.startup_id);
+  if (!startup) {
+    throw new Error('Startup profile not found');
+  }
+
+  if (!startup.verified) {
+    throw new Error('Eligibility block: Startup must have verified DPIIT registration to submit applications.');
+  }
+
+  // Check unique key: applications(problem_id, startup_id)
+  const existing = state.applications.find(
+    (a) => a.problem_id === params.problem_id && a.startup_id === params.startup_id
+  );
+  if (existing) {
+    throw new Error('An application from this startup has already been submitted for this challenge.');
+  }
+
+  const newApp: Application = {
+    id: `app-${Date.now().toString(36)}`,
+    problem_id: params.problem_id,
+    startup_id: params.startup_id,
+    startup,
+    pitch: params.pitch.trim(),
+    proposed_budget: Number(params.proposed_budget),
+    pilot_timeline_weeks: Number(params.pilot_timeline_weeks),
+    status: 'submitted',
+    created_at: new Date().toISOString(),
+  };
+
+  state.applications.unshift(newApp);
+  problem.application_count = (problem.application_count || 0) + 1;
+
+  saveState(state);
+  return newApp;
+}
+
+// ----------------------------------------------------
+// Pilots & Milestones
+// ----------------------------------------------------
+
 export function selectApplicantAndStartPilot(params: {
   applicationId: string;
   startDate: string;
@@ -159,7 +302,6 @@ export function selectApplicantAndStartPilot(params: {
   const problem = state.problems[problemIndex];
   const startup = state.startups.find((s) => s.id === selectedApp.startup_id);
 
-  // Update application status
   selectedApp.status = 'selected';
 
   // Reject all other applications for this problem
@@ -169,7 +311,6 @@ export function selectApplicantAndStartPilot(params: {
     }
   });
 
-  // Create pilot
   const pilotId = `pilot-${Date.now().toString(36)}`;
   const pilotMilestones: Milestone[] = params.milestones.map((m, idx) => ({
     id: `m-${pilotId}-${idx + 1}`,
@@ -199,7 +340,6 @@ export function selectApplicantAndStartPilot(params: {
 
   state.pilots.unshift(newPilot);
 
-  // Update problem status
   problem.status = 'in_pilot';
   problem.active_pilot_id = pilotId;
 
@@ -207,13 +347,50 @@ export function selectApplicantAndStartPilot(params: {
   return { pilot: newPilot, updatedProblem: problem };
 }
 
-// 6. Get Pilot by ID
+export function getPilots(filter?: { status?: string; startupName?: string }): Pilot[] {
+  const state = loadState();
+  let list = state.pilots;
+  if (filter?.status) {
+    list = list.filter((p) => p.status === filter.status);
+  }
+  if (filter?.startupName) {
+    list = list.filter((p) => p.startup_name?.toLowerCase().includes(filter.startupName!.toLowerCase()));
+  }
+  return list;
+}
+
 export function getPilotById(id: string): Pilot | undefined {
   const state = loadState();
   return state.pilots.find((p) => p.id === id);
 }
 
-// 7. Review milestone (Department action: mark met or missed)
+export function submitMilestoneEvidence(
+  pilotId: string,
+  milestoneId: string,
+  evidenceUrl: string,
+  notes?: string
+): Pilot {
+  const state = loadState();
+  const pilot = state.pilots.find((p) => p.id === pilotId);
+  if (!pilot) {
+    throw new Error('Pilot not found');
+  }
+
+  const milestone = pilot.milestones.find((m) => m.id === milestoneId);
+  if (!milestone) {
+    throw new Error('Milestone not found');
+  }
+
+  milestone.evidence_url = evidenceUrl.trim();
+  milestone.status = 'submitted';
+  if (notes) {
+    milestone.notes = notes.trim();
+  }
+
+  saveState(state);
+  return pilot;
+}
+
 export function reviewMilestone(
   pilotId: string,
   milestoneId: string,
@@ -235,7 +412,10 @@ export function reviewMilestone(
   return pilot;
 }
 
-// 8. Conversion check (Section 10 in README)
+// ----------------------------------------------------
+// Conversion Engine
+// ----------------------------------------------------
+
 export function checkConversion(
   pilot: Pilot,
   contractValue?: number
@@ -315,10 +495,8 @@ export function checkConversion(
   }
 
   // Rule 5: Pilot end date has not been exceeded without an extension
-  // In demo we allow active dates or check today's date
   const now = new Date();
   const endDate = new Date(pilot.end_date);
-  // Add 10-day buffer or check extension
   const withinDate = isNaN(endDate.getTime()) ? true : now <= new Date(endDate.getTime() + 86400000 * 14);
   rules.push({
     ruleNumber: 5,
@@ -344,7 +522,6 @@ export function checkConversion(
   };
 }
 
-// 9. Convert pilot to contract (Section 10)
 export function convertPilotToContract(params: {
   pilotId: string;
   contractValue: number;
@@ -362,16 +539,31 @@ export function convertPilotToContract(params: {
   }
 
   const contractId = `CNT-2026-${Math.random().toString(36).substring(2, 6).toUpperCase()}-${Date.now().toString().slice(-4)}`;
-  const recordHash = `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852${Math.random().toString(16).substring(2, 10)}`;
+  const ruleRef = params.ruleReference || 'Rule 149(viii) of GFR 2017 / GeM Startup Direct Mandate';
+
+  // Build canonical record & SHA-256 hash
+  const canonical = buildRecord({
+    contractId,
+    department: pilot.department_name || 'Government Department',
+    startup: pilot.startup_name || 'Startup',
+    problem: pilot.problem_title || 'Operational Problem',
+    startDate: pilot.start_date,
+    endDate: pilot.end_date,
+    budget: pilot.budget,
+    contractValue: params.contractValue,
+    ruleReference: ruleRef,
+    milestones: pilot.milestones,
+  });
+
+  const recordHash = hashRecord(canonical);
 
   pilot.status = 'converted';
   pilot.converted_at = new Date().toISOString();
   pilot.contract_id = contractId;
   pilot.contract_value = params.contractValue;
   pilot.record_hash = recordHash;
-  pilot.rule_reference = params.ruleReference || 'Rule 149(viii) of GFR 2017 / GeM Startup Direct Mandate';
+  pilot.rule_reference = ruleRef;
 
-  // Also update problem status to converted
   const problem = state.problems.find((p) => p.id === pilot.problem_id);
   if (problem) {
     problem.status = 'converted';
@@ -379,4 +571,162 @@ export function convertPilotToContract(params: {
 
   saveState(state);
   return { pilot, contractId, recordHash };
+}
+
+// ----------------------------------------------------
+// Contracts & Verification (Public)
+// ----------------------------------------------------
+
+export function getContracts(): Array<{
+  contract_id: string;
+  pilot: Pilot;
+  record_hash: string;
+  converted_at?: string;
+}> {
+  const state = loadState();
+  return state.pilots
+    .filter((p) => p.status === 'converted' && p.contract_id)
+    .map((p) => ({
+      contract_id: p.contract_id!,
+      pilot: p,
+      record_hash: p.record_hash || '',
+      converted_at: p.converted_at,
+    }));
+}
+
+export function getContractById(contractId: string): Pilot | undefined {
+  const state = loadState();
+  return state.pilots.find((p) => p.contract_id === contractId || p.id === contractId);
+}
+
+export function verifyContractRecord(contractId: string): {
+  verified: boolean;
+  storedHash: string;
+  computedHash: string;
+  pilot: Pilot;
+  summary: {
+    contractId: string;
+    department: string;
+    startup: string;
+    problem: string;
+    milestoneCount: number;
+    metCount: number;
+    successRate: number;
+    contractValue: number;
+  };
+} {
+  const pilot = getContractById(contractId);
+  if (!pilot) {
+    throw new Error(`Contract reference "${contractId}" not found in statutory registry.`);
+  }
+
+  const storedHash = pilot.record_hash || '';
+
+  const canonical = buildRecord({
+    contractId: pilot.contract_id || contractId,
+    department: pilot.department_name || '',
+    startup: pilot.startup_name || '',
+    problem: pilot.problem_title || '',
+    startDate: pilot.start_date,
+    endDate: pilot.end_date,
+    budget: pilot.budget,
+    contractValue: pilot.contract_value || pilot.budget,
+    ruleReference: pilot.rule_reference || 'Rule 149(viii) GFR 2017',
+    milestones: pilot.milestones,
+  });
+
+  const computedHash = hashRecord(canonical);
+  const verified = Boolean(storedHash && storedHash.toLowerCase() === computedHash.toLowerCase());
+
+  const totalM = pilot.milestones.length;
+  const metCount = pilot.milestones.filter((m) => m.status === 'met').length;
+  const successRate = totalM > 0 ? Math.round((metCount / totalM) * 100) : 0;
+
+  return {
+    verified,
+    storedHash,
+    computedHash,
+    pilot,
+    summary: {
+      contractId: pilot.contract_id || contractId,
+      department: pilot.department_name || '',
+      startup: pilot.startup_name || '',
+      problem: pilot.problem_title || '',
+      milestoneCount: totalM,
+      metCount,
+      successRate,
+      contractValue: pilot.contract_value || pilot.budget,
+    },
+  };
+}
+
+// Tamper simulation for live demo presentation (Section 20 of README)
+export function tamperMilestoneForAuditDemo(
+  pilotId: string,
+  milestoneId: string,
+  newStatus: 'met' | 'missed'
+): { pilot: Pilot; previousStatus: string; newStatus: string } {
+  const state = loadState();
+  const pilot = state.pilots.find((p) => p.id === pilotId || p.contract_id === pilotId);
+  if (!pilot) {
+    throw new Error('Pilot/contract not found');
+  }
+
+  const milestone = pilot.milestones.find((m) => m.id === milestoneId);
+  if (!milestone) {
+    throw new Error('Milestone not found');
+  }
+
+  const prev = milestone.status;
+  milestone.status = newStatus;
+
+  saveState(state);
+  return { pilot, previousStatus: prev, newStatus };
+}
+
+// ----------------------------------------------------
+// Adoptions (Scale phase)
+// ----------------------------------------------------
+
+export function getAdoptions(): Adoption[] {
+  const state = loadState();
+  return state.adoptions || [];
+}
+
+export function createAdoption(params: {
+  contract_id: string;
+  department_id: string;
+  department_name: string;
+  notes?: string;
+}): Adoption {
+  const state = loadState();
+  const contract = getContractById(params.contract_id);
+  if (!contract) {
+    throw new Error('Contract not found for adoption');
+  }
+
+  // Unique constraint: adoptions(contract_id, department_id)
+  const existing = state.adoptions.find(
+    (a) => a.contract_id === params.contract_id && a.department_id === params.department_id
+  );
+  if (existing) {
+    throw new Error('This department has already initiated procurement adoption for this contract.');
+  }
+
+  const newAdoption: Adoption = {
+    id: `adopt-${Date.now().toString(36)}`,
+    contract_id: params.contract_id,
+    department_id: params.department_id,
+    department_name: params.department_name,
+    adopted_at: new Date().toISOString(),
+    pilot_title: contract.problem_title,
+    startup_name: contract.startup_name,
+    contract_value: contract.contract_value || contract.budget,
+    sector: contract.problem_title?.includes('Aquifer') ? 'Water & Sanitation' : 'Public Infrastructure',
+    notes: params.notes || 'Direct scale adoption approved under GFR 149(viii) across jurisdiction.',
+  };
+
+  state.adoptions.unshift(newAdoption);
+  saveState(state);
+  return newAdoption;
 }

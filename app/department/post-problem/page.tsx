@@ -59,72 +59,44 @@ export default function PostProblem() {
       return;
     }
 
-    if (!description.trim() || description.trim().length < 20) {
-      showToast('Please provide a detailed description and operational objectives.', 'error');
+    if (!description.trim() || description.trim().length < 25) {
+      showToast('Please provide a substantive technical description (min 25 characters).', 'error');
       return;
     }
 
     const budgetNum = Number(budgetCap);
     if (isNaN(budgetNum) || budgetNum <= 0) {
-      showToast('Please enter a valid positive budget cap in INR.', 'error');
-      return;
-    }
-
-    if (!deadline) {
-      showToast('Please specify an application deadline date.', 'error');
+      showToast('Please enter a valid budget cap in INR.', 'error');
       return;
     }
 
     setIsSubmitting(true);
-
     try {
-      // 1. Create problem via store
-      const created = createProblem({
+      createProblem({
         department_id: 'dept-1',
         department_name: departmentName,
-        title,
-        description,
+        title: title.trim(),
+        description: description.trim(),
         sector,
         budget_cap: budgetNum,
         deadline,
       });
 
-      // 2. Also dispatch to API endpoint if active
-      try {
-        await fetch('/api/problems', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            title,
-            description,
-            sector,
-            budget_cap: budgetNum,
-            deadline,
-          }),
-        });
-      } catch (err) {
-        // Fallback gracefully to store
-      }
-
-      showToast('Problem challenge posted successfully! Status is now OPEN.', 'success');
-
-      // Redirect to the applications review page for this new problem
-      setTimeout(() => {
-        router.push(`/department/problems/${created.id}`);
-      }, 700);
+      showToast('Operational Challenge posted successfully! Published to startups.', 'success');
+      router.push('/department/dashboard');
     } catch (err: any) {
-      showToast(err?.message || 'Failed to post problem challenge', 'error');
+      showToast(err.message || 'Failed to post challenge', 'error');
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 animate-in fade-in duration-200">
+    <div className="max-w-4xl mx-auto space-y-6 animate-in fade-in duration-200 py-8 px-4 sm:px-6">
       {/* Navigation Breadcrumb */}
       <div className="flex items-center justify-between">
         <Link
           href="/department/dashboard"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-zinc-600 hover:text-black transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Back to Command Center</span>
@@ -134,177 +106,168 @@ export default function PostProblem() {
         <button
           type="button"
           onClick={handlePreFillDemo}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-50 text-blue-800 border border-blue-200 hover:bg-blue-100 transition-colors shadow-xs"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-zinc-100 text-zinc-900 border border-zinc-300 hover:bg-zinc-200 transition-colors shadow-2xs"
           title="Auto-fill sample challenge for quick judging demo"
         >
-          <Sparkles className="w-3.5 h-3.5 text-blue-600" />
+          <Sparkles className="w-3.5 h-3.5 text-zinc-900" />
           <span>Quick Demo Auto-Fill</span>
         </button>
       </div>
 
       {/* Main Form Card */}
-      <div className="gov-card p-6 sm:p-8 bg-white border border-slate-200 shadow-xs space-y-6">
+      <div className="p-6 sm:p-8 bg-white rounded-2xl border border-zinc-200 shadow-xs space-y-6">
         <div>
-          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-blue-700 mb-1">
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-zinc-900 mb-1">
             <Building2 className="w-4 h-4" />
-            <span>Screen 2</span>
+            <span>Post Operational Challenge</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-            Post Department Operational Challenge
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-zinc-950 tracking-tight">
+            Commission Public Sector Innovation
           </h1>
-          <p className="text-xs sm:text-sm text-slate-600 mt-1.5 leading-relaxed font-normal">
+          <p className="text-xs sm:text-sm text-zinc-600 mt-1.5 leading-relaxed font-normal">
             Specify the operational problem, success targets, and trial budget cap. This will be published immediately to verified DPIIT startups under open competitive pilot guidelines.
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Department Name */}
-          <div className="space-y-1.5">
-            <label className="block text-xs font-bold text-slate-900 uppercase tracking-wider">
-              Procuring Department / Authority
-            </label>
-            <input
-              type="text"
-              value={departmentName}
-              onChange={(e) => setDepartmentName(e.target.value)}
-              className="w-full bg-white border border-slate-300 rounded-lg px-4 py-2.5 text-sm text-slate-900 font-medium focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-colors"
-              required
-            />
-          </div>
-
-          {/* Title */}
-          <div className="space-y-1.5">
-            <label className="block text-xs font-bold text-slate-900 uppercase tracking-wider">
-              Challenge Title <span className="text-rose-600">*</span>
-            </label>
-            <input
-              type="text"
-              placeholder="e.g. AI-Powered Acoustic Pipeline Leakage & Non-Revenue Water Detection"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="w-full bg-white border border-slate-300 rounded-lg px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 font-medium focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-colors"
-              required
-            />
-            <span className="text-xs text-slate-500 font-medium">
-              Clear, objective-focused title stating the core technical challenge.
-            </span>
-          </div>
-
-          {/* Sector & Budget Cap Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            {/* Sector */}
-            <div className="space-y-1.5">
-              <label className="block text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
-                <Tag className="w-3.5 h-3.5 text-blue-600" />
-                <span>Sector / Domain</span>
+          {/* Section: Basic Details */}
+          <div className="space-y-4">
+            <div>
+              <label htmlFor="title" className="block text-xs font-bold uppercase tracking-wider text-zinc-700 mb-1">
+                Challenge Title *
               </label>
-              <select
-                value={sector}
-                onChange={(e) => setSector(e.target.value)}
-                className="w-full bg-white border border-slate-300 rounded-lg px-4 py-2.5 text-sm text-slate-900 font-medium focus:outline-none focus:border-blue-600"
-              >
-                {SECTORS.map((sec) => (
-                  <option key={sec} value={sec}>
-                    {sec}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Budget Cap */}
-            <div className="space-y-1.5">
-              <label className="block text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
-                <IndianRupee className="w-3.5 h-3.5 text-emerald-700" />
-                <span>Maximum Pilot Budget Cap (INR) <span className="text-rose-600">*</span></span>
-              </label>
-              <div className="relative">
-                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 font-mono text-sm font-bold">₹</span>
-                <input
-                  type="number"
-                  min="50000"
-                  step="10000"
-                  placeholder="1500000"
-                  value={budgetCap}
-                  onChange={(e) => setBudgetCap(e.target.value)}
-                  className="w-full bg-white border border-slate-300 rounded-lg pl-8 pr-4 py-2.5 text-sm text-slate-900 font-mono font-bold focus:outline-none focus:border-blue-600"
-                  required
-                />
-              </div>
-              <span className="text-xs text-slate-500 font-medium">
-                Rule 4 Check: Any resulting direct contract cannot exceed this amount.
+              <input
+                id="title"
+                type="text"
+                required
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="e.g. AI-Powered Acoustic Pipeline Leakage & Non-Revenue Water Detection"
+                className="w-full bg-white border border-zinc-300 rounded-xl px-4 py-2.5 text-sm text-zinc-900 font-medium focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-colors"
+              />
+              <span className="text-[11px] text-zinc-400 mt-1 block">
+                Clear, action-oriented title describing the target outcome.
               </span>
             </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="dept" className="block text-xs font-bold uppercase tracking-wider text-zinc-700 mb-1">
+                  Procuring Ministry / Department *
+                </label>
+                <input
+                  id="dept"
+                  type="text"
+                  required
+                  value={departmentName}
+                  onChange={(e) => setDepartmentName(e.target.value)}
+                  className="w-full bg-white border border-zinc-300 rounded-xl px-4 py-2.5 text-sm text-zinc-900 placeholder-zinc-400 font-medium focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-colors"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="sector" className="block text-xs font-bold uppercase tracking-wider text-zinc-700 mb-1">
+                  Domain Sector *
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Tag className="w-3.5 h-3.5 text-zinc-400" />
+                  </div>
+                  <select
+                    id="sector"
+                    value={sector}
+                    onChange={(e) => setSector(e.target.value)}
+                    className="w-full bg-white border border-zinc-300 rounded-xl pl-9 pr-4 py-2.5 text-sm text-zinc-900 font-medium focus:outline-none focus:border-black"
+                  >
+                    {SECTORS.map((s) => (
+                      <option key={s} value={s}>
+                        {s}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="budget" className="block text-xs font-bold uppercase tracking-wider text-zinc-700 mb-1">
+                  Statutory Pilot Budget Cap (INR) *
+                </label>
+                <div className="relative">
+                  <input
+                    id="budget"
+                    type="number"
+                    required
+                    step="10000"
+                    min="100000"
+                    value={budgetCap}
+                    onChange={(e) => setBudgetCap(e.target.value)}
+                    className="w-full bg-white border border-zinc-300 rounded-xl px-4 py-2.5 text-sm text-zinc-900 font-mono font-bold focus:outline-none focus:border-black"
+                  />
+                </div>
+                <span className="text-[11px] text-zinc-400 mt-1 block">
+                  Capped per GFR Rule 149(viii) pilot authorization limits.
+                </span>
+              </div>
+
+              <div>
+                <label htmlFor="deadline" className="block text-xs font-bold uppercase tracking-wider text-zinc-700 mb-1">
+                  Proposal Submission Deadline *
+                </label>
+                <input
+                  id="deadline"
+                  type="date"
+                  required
+                  value={deadline}
+                  onChange={(e) => setDeadline(e.target.value)}
+                  className="w-full bg-white border border-zinc-300 rounded-xl px-4 py-2.5 text-sm text-zinc-900 font-medium focus:outline-none focus:border-black"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="desc" className="block text-xs font-bold uppercase tracking-wider text-zinc-700 mb-1">
+                Detailed Problem Context & Target Benchmarks *
+              </label>
+              <textarea
+                id="desc"
+                required
+                rows={5}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Explain the technical requirement, operational site characteristics, telemetry expectations, and quantitative benchmark targets..."
+                className="w-full bg-white border border-zinc-300 rounded-xl p-4 text-sm text-zinc-900 placeholder-zinc-400 font-medium focus:outline-none focus:border-black leading-relaxed"
+              />
+            </div>
           </div>
 
-          {/* Deadline */}
-          <div className="space-y-1.5">
-            <label className="block text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
-              <Calendar className="w-3.5 h-3.5 text-slate-600" />
-              <span>Startup Application Deadline <span className="text-rose-600">*</span></span>
-            </label>
-            <input
-              type="date"
-              value={deadline}
-              onChange={(e) => setDeadline(e.target.value)}
-              className="w-full sm:w-64 bg-white border border-slate-300 rounded-lg px-4 py-2.5 text-sm text-slate-900 font-medium focus:outline-none focus:border-blue-600"
-              required
-            />
-          </div>
-
-          {/* Description */}
-          <div className="space-y-1.5">
-            <label className="block text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
-              <FileText className="w-3.5 h-3.5 text-blue-600" />
-              <span>Problem Description & Expected Outcome <span className="text-rose-600">*</span></span>
-            </label>
-            <textarea
-              rows={5}
-              placeholder="Detail the operational situation, existing limitations, testbed environment, and target quantitative benchmarks (e.g. 30% reduction in response time, 99% uptime)..."
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="w-full bg-white border border-slate-300 rounded-lg p-4 text-sm text-slate-900 placeholder-slate-400 font-medium focus:outline-none focus:border-blue-600 leading-relaxed"
-              required
-            />
-            <span className="text-xs text-slate-500 font-medium">
-              Tip: Explicit quantitative targets make milestone verification straightforward.
-            </span>
-          </div>
-
-          {/* Statutory Notice */}
-          <div className="p-4 rounded-lg bg-blue-50 border border-blue-200 text-xs text-blue-950 flex items-start gap-3">
-            <Info className="w-4 h-4 text-blue-700 shrink-0 mt-0.5" />
-            <div className="space-y-1">
-              <span className="font-bold text-blue-950">GFR 2017 & Public Procurement Compliance:</span>
-              <p className="leading-relaxed text-blue-900 font-medium">
-                By publishing this problem statement on NavSetu, you initiate an open, non-discriminatory innovation challenge. Selected proposals undergo live milestone trials with tamper-evident cryptographic verification before direct contract conversion.
+          {/* Regulatory Note */}
+          <div className="p-4 rounded-xl bg-zinc-50 border border-zinc-200 text-xs text-zinc-900 flex items-start gap-3">
+            <Info className="w-4 h-4 text-zinc-700 shrink-0 mt-0.5" />
+            <div>
+              <span className="font-bold text-zinc-950">GFR 2017 & Public Procurement Compliance:</span>
+              <p className="leading-relaxed text-zinc-600 font-medium mt-0.5">
+                Problems posted on NavSetu are automatically bound to the GFR 149(viii) startup runway framework. Applicants are verified against DPIIT registries. Selected startups enter a paid trial pilot; upon milestone verification, this converts into a direct procurement contract.
               </p>
             </div>
           </div>
 
           {/* Form Actions */}
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-200">
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-zinc-100">
             <Link
               href="/department/dashboard"
-              className="px-5 py-2.5 rounded-lg text-xs font-bold text-slate-700 hover:text-slate-900 bg-white hover:bg-slate-50 border border-slate-300 transition-colors shadow-xs"
+              className="px-4 py-2.5 rounded-xl text-xs font-bold text-zinc-600 hover:text-black hover:bg-zinc-100 transition-colors"
             >
               Cancel
             </Link>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex items-center gap-2 px-6 py-2.5 rounded-lg text-xs font-bold text-white bg-blue-700 hover:bg-blue-800 shadow-xs transition-colors disabled:opacity-50"
+              className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-bold text-white bg-black hover:bg-zinc-800 shadow-xs transition-colors disabled:opacity-50 cursor-pointer"
             >
-              {isSubmitting ? (
-                <>
-                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  <span>Publishing Challenge...</span>
-                </>
-              ) : (
-                <>
-                  <Send className="w-4 h-4" />
-                  <span>Publish Challenge (Open Status)</span>
-                </>
-              )}
+              <Send className="w-3.5 h-3.5" />
+              <span>{isSubmitting ? 'Publishing Challenge...' : 'Publish Challenge'}</span>
             </button>
           </div>
         </form>

@@ -319,7 +319,7 @@ export const INITIAL_PILOTS: Pilot[] = [
     status: 'converted',
     converted_at: '2026-10-12T16:30:00Z',
     contract_id: 'CNT-2026-JAL-0881',
-    record_hash: '7f9a2b8e3d4c1a5f6e8b0d2c4e6a8f0b2d4e6a8f0b2d4e6a8f0b2d4e6a8f0b2d',
+    record_hash: '693c22706b4375e3262b55396de4b1af6301292295533e24246fc7cf69b18efe',
     rule_reference: 'Rule 149(viii) GFR 2017 / Startup Runway Mandate',
     milestones: [
       {

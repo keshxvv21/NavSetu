@@ -3,17 +3,16 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { 
-  Building2, 
-  ArrowLeft, 
-  Send, 
-  Sparkles, 
-  Info, 
-  IndianRupee, 
-  Calendar, 
-  Tag, 
-  FileText,
-  CheckCircle2
+import {
+  Building2,
+  ArrowLeft,
+  Send,
+  Sparkles,
+  Info,
+  IndianRupee,
+  Calendar,
+  Tag,
+  FileText
 } from 'lucide-react';
 import { useToast } from '@/components/Toast';
 import { createProblem } from '@/lib/departmentStore';
@@ -40,7 +39,7 @@ export default function PostProblem() {
   const [departmentName, setDepartmentName] = useState('Dept. of Drinking Water & Sanitation');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Quick Pre-fill for Hackathon Demos (Instant 20-second demo)
+  // Quick Pre-fill for Demos (Instant 20-second demo)
   const handlePreFillDemo = () => {
     setTitle('Autonomous Micro-Sonar Silt & Structural Health Drone for Canal Siphons');
     setSector('Water & Sanitation');
@@ -79,7 +78,7 @@ export default function PostProblem() {
     setIsSubmitting(true);
 
     try {
-      // 1. Create problem via store (works locally & keeps localStorage state)
+      // 1. Create problem via store
       const created = createProblem({
         department_id: 'dept-1',
         department_name: departmentName,
@@ -108,7 +107,7 @@ export default function PostProblem() {
       }
 
       showToast('Problem challenge posted successfully! Status is now OPEN.', 'success');
-      
+
       // Redirect to the applications review page for this new problem
       setTimeout(() => {
         router.push(`/department/problems/${created.id}`);
@@ -120,12 +119,12 @@ export default function PostProblem() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 animate-in fade-in duration-300">
+    <div className="max-w-4xl mx-auto space-y-6 animate-in fade-in duration-200">
       {/* Navigation Breadcrumb */}
       <div className="flex items-center justify-between">
         <Link
           href="/department/dashboard"
-          className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Back to Command Center</span>
@@ -135,58 +134,58 @@ export default function PostProblem() {
         <button
           type="button"
           onClick={handlePreFillDemo}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-500/15 text-indigo-300 border border-indigo-500/30 hover:bg-indigo-500/25 transition-all"
-          title="Auto-fill sample challenge for quick SIH judging demo"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-50 text-blue-800 border border-blue-200 hover:bg-blue-100 transition-colors shadow-xs"
+          title="Auto-fill sample challenge for quick judging demo"
         >
-          <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+          <Sparkles className="w-3.5 h-3.5 text-blue-600" />
           <span>Quick Demo Auto-Fill</span>
         </button>
       </div>
 
       {/* Main Form Card */}
-      <div className="glass-panel p-6 sm:p-8 rounded-2xl border border-slate-800 space-y-6">
+      <div className="gov-card p-6 sm:p-8 bg-white border border-slate-200 shadow-xs space-y-6">
         <div>
-          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-blue-400 mb-1">
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-blue-700 mb-1">
             <Building2 className="w-4 h-4" />
-            <span>Smart India Hackathon • Screen 2</span>
+            <span>Screen 2</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
             Post Department Operational Challenge
           </h1>
-          <p className="text-xs sm:text-sm text-slate-300 mt-1 leading-relaxed">
+          <p className="text-xs sm:text-sm text-slate-600 mt-1.5 leading-relaxed font-normal">
             Specify the operational problem, success targets, and trial budget cap. This will be published immediately to verified DPIIT startups under open competitive pilot guidelines.
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Department Name (Read-only or selectable) */}
+          {/* Department Name */}
           <div className="space-y-1.5">
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider">
+            <label className="block text-xs font-bold text-slate-900 uppercase tracking-wider">
               Procuring Department / Authority
             </label>
             <input
               type="text"
               value={departmentName}
               onChange={(e) => setDepartmentName(e.target.value)}
-              className="w-full bg-slate-900/80 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors"
+              className="w-full bg-white border border-slate-300 rounded-lg px-4 py-2.5 text-sm text-slate-900 font-medium focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-colors"
               required
             />
           </div>
 
           {/* Title */}
           <div className="space-y-1.5">
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider">
-              Challenge Title <span className="text-rose-400">*</span>
+            <label className="block text-xs font-bold text-slate-900 uppercase tracking-wider">
+              Challenge Title <span className="text-rose-600">*</span>
             </label>
             <input
               type="text"
               placeholder="e.g. AI-Powered Acoustic Pipeline Leakage & Non-Revenue Water Detection"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full bg-slate-900/80 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition-colors"
+              className="w-full bg-white border border-slate-300 rounded-lg px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 font-medium focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-colors"
               required
             />
-            <span className="text-[11px] text-slate-500">
+            <span className="text-xs text-slate-500 font-medium">
               Clear, objective-focused title stating the core technical challenge.
             </span>
           </div>
@@ -195,14 +194,14 @@ export default function PostProblem() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {/* Sector */}
             <div className="space-y-1.5">
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-                <Tag className="w-3.5 h-3.5 text-blue-400" />
+              <label className="block text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
+                <Tag className="w-3.5 h-3.5 text-blue-600" />
                 <span>Sector / Domain</span>
               </label>
               <select
                 value={sector}
                 onChange={(e) => setSector(e.target.value)}
-                className="w-full bg-slate-900/80 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500"
+                className="w-full bg-white border border-slate-300 rounded-lg px-4 py-2.5 text-sm text-slate-900 font-medium focus:outline-none focus:border-blue-600"
               >
                 {SECTORS.map((sec) => (
                   <option key={sec} value={sec}>
@@ -214,12 +213,12 @@ export default function PostProblem() {
 
             {/* Budget Cap */}
             <div className="space-y-1.5">
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-                <IndianRupee className="w-3.5 h-3.5 text-emerald-400" />
-                <span>Maximum Pilot Budget Cap (INR) <span className="text-rose-400">*</span></span>
+              <label className="block text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
+                <IndianRupee className="w-3.5 h-3.5 text-emerald-700" />
+                <span>Maximum Pilot Budget Cap (INR) <span className="text-rose-600">*</span></span>
               </label>
               <div className="relative">
-                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-mono text-sm">₹</span>
+                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 font-mono text-sm font-bold">₹</span>
                 <input
                   type="number"
                   min="50000"
@@ -227,11 +226,11 @@ export default function PostProblem() {
                   placeholder="1500000"
                   value={budgetCap}
                   onChange={(e) => setBudgetCap(e.target.value)}
-                  className="w-full bg-slate-900/80 border border-slate-800 rounded-xl pl-8 pr-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500 font-mono"
+                  className="w-full bg-white border border-slate-300 rounded-lg pl-8 pr-4 py-2.5 text-sm text-slate-900 font-mono font-bold focus:outline-none focus:border-blue-600"
                   required
                 />
               </div>
-              <span className="text-[11px] text-slate-500">
+              <span className="text-xs text-slate-500 font-medium">
                 Rule 4 Check: Any resulting direct contract cannot exceed this amount.
               </span>
             </div>
@@ -239,61 +238,61 @@ export default function PostProblem() {
 
           {/* Deadline */}
           <div className="space-y-1.5">
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-              <Calendar className="w-3.5 h-3.5 text-amber-400" />
-              <span>Startup Application Deadline <span className="text-rose-400">*</span></span>
+            <label className="block text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
+              <Calendar className="w-3.5 h-3.5 text-slate-600" />
+              <span>Startup Application Deadline <span className="text-rose-600">*</span></span>
             </label>
             <input
               type="date"
               value={deadline}
               onChange={(e) => setDeadline(e.target.value)}
-              className="w-full sm:w-64 bg-slate-900/80 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500"
+              className="w-full sm:w-64 bg-white border border-slate-300 rounded-lg px-4 py-2.5 text-sm text-slate-900 font-medium focus:outline-none focus:border-blue-600"
               required
             />
           </div>
 
           {/* Description */}
           <div className="space-y-1.5">
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-              <FileText className="w-3.5 h-3.5 text-indigo-400" />
-              <span>Problem Description & Expected Outcome <span className="text-rose-400">*</span></span>
+            <label className="block text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
+              <FileText className="w-3.5 h-3.5 text-blue-600" />
+              <span>Problem Description & Expected Outcome <span className="text-rose-600">*</span></span>
             </label>
             <textarea
               rows={5}
               placeholder="Detail the operational situation, existing limitations, testbed environment, and target quantitative benchmarks (e.g. 30% reduction in response time, 99% uptime)..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full bg-slate-900/80 border border-slate-800 rounded-xl p-4 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 leading-relaxed"
+              className="w-full bg-white border border-slate-300 rounded-lg p-4 text-sm text-slate-900 placeholder-slate-400 font-medium focus:outline-none focus:border-blue-600 leading-relaxed"
               required
             />
-            <span className="text-[11px] text-slate-500">
+            <span className="text-xs text-slate-500 font-medium">
               Tip: Explicit quantitative targets make milestone verification straightforward.
             </span>
           </div>
 
           {/* Statutory Notice */}
-          <div className="p-4 rounded-xl bg-blue-950/20 border border-blue-500/20 text-xs text-blue-200/90 flex items-start gap-3">
-            <Info className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
+          <div className="p-4 rounded-lg bg-blue-50 border border-blue-200 text-xs text-blue-950 flex items-start gap-3">
+            <Info className="w-4 h-4 text-blue-700 shrink-0 mt-0.5" />
             <div className="space-y-1">
-              <span className="font-semibold text-white">GFR 2017 & Public Procurement Compliance:</span>
-              <p className="leading-relaxed">
+              <span className="font-bold text-blue-950">GFR 2017 & Public Procurement Compliance:</span>
+              <p className="leading-relaxed text-blue-900 font-medium">
                 By publishing this problem statement on NavSetu, you initiate an open, non-discriminatory innovation challenge. Selected proposals undergo live milestone trials with tamper-evident cryptographic verification before direct contract conversion.
               </p>
             </div>
           </div>
 
           {/* Form Actions */}
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+          <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-200">
             <Link
               href="/department/dashboard"
-              className="px-5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-900 hover:bg-slate-800 border border-slate-800 transition-colors"
+              className="px-5 py-2.5 rounded-lg text-xs font-bold text-slate-700 hover:text-slate-900 bg-white hover:bg-slate-50 border border-slate-300 transition-colors shadow-xs"
             >
               Cancel
             </Link>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-500 hover:from-blue-500 hover:to-indigo-500 shadow-lg shadow-blue-600/30 transition-all disabled:opacity-50"
+              className="flex items-center gap-2 px-6 py-2.5 rounded-lg text-xs font-bold text-white bg-blue-700 hover:bg-blue-800 shadow-xs transition-colors disabled:opacity-50"
             >
               {isSubmitting ? (
                 <>

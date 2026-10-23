@@ -8,9 +8,7 @@ import {
   PlusCircle, 
   LayoutDashboard, 
   Layers, 
-  FileCheck, 
   ShieldCheck, 
-  Sparkles,
   LogOut
 } from 'lucide-react';
 
@@ -26,7 +24,7 @@ export default function Navbar({ departmentName = 'Dept. of Drinking Water & San
       name: 'Department Dashboard',
       href: '/department/dashboard',
       icon: LayoutDashboard,
-      active: pathname === '/department/dashboard',
+      active: pathname === '/department/dashboard' || pathname === '/department',
     },
     {
       name: 'Post Problem',
@@ -43,46 +41,41 @@ export default function Navbar({ departmentName = 'Dept. of Drinking Water & San
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-md">
+    <header className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/95 backdrop-blur-md shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Brand */}
         <div className="flex items-center gap-6">
           <Link href="/department/dashboard" className="flex items-center gap-3 group">
-            <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-cyan-400 p-0.5 shadow-md shadow-blue-500/20 group-hover:shadow-blue-500/40 transition-all">
-              <div className="h-full w-full bg-slate-950 rounded-[10px] flex items-center justify-center">
-                <Building2 className="h-5 w-5 text-blue-400 group-hover:scale-110 transition-transform" />
-              </div>
+            <div className="h-9 w-9 rounded-lg bg-blue-700 flex items-center justify-center text-white shadow-sm">
+              <Building2 className="h-5 w-5" />
             </div>
             <div>
-              <div className="flex items-center gap-1.5">
-                <span className="font-bold text-lg tracking-tight bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">
+              <div className="flex items-center gap-2">
+                <span className="font-extrabold text-lg text-slate-900 tracking-tight">
                   NavSetu
                 </span>
-                <span className="text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-500/30">
-                  SIH 2026
-                </span>
               </div>
-              <p className="text-[11px] text-slate-400 -mt-0.5 hidden sm:block">
+              <p className="text-[11px] text-slate-600 font-medium -mt-0.5 hidden sm:block">
                 Gov-Startup Pilot & Fast-Track Procurement
               </p>
             </div>
           </Link>
 
           {/* Nav links */}
-          <nav className="hidden md:flex items-center gap-1 ml-4 border-l border-slate-800 pl-4">
+          <nav className="hidden md:flex items-center gap-1 ml-4 border-l border-slate-200 pl-4">
             {navLinks.map((item) => {
               const Icon = item.icon;
               return (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-medium transition-all ${
+                  className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold transition-all ${
                     item.active
-                      ? 'bg-blue-600/15 text-blue-400 border border-blue-500/30'
-                      : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+                      ? 'bg-blue-50 text-blue-800 border border-blue-200'
+                      : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
                   }`}
                 >
-                  <Icon className="h-3.5 w-3.5" />
+                  <Icon className="h-3.5 w-3.5 text-blue-600" />
                   {item.name}
                 </Link>
               );
@@ -93,28 +86,28 @@ export default function Navbar({ departmentName = 'Dept. of Drinking Water & San
         {/* Right side - User & Role */}
         <div className="flex items-center gap-3">
           <div className="hidden sm:flex flex-col text-right">
-            <span className="text-xs font-semibold text-slate-200">{departmentName}</span>
-            <div className="flex items-center justify-end gap-1.5 text-[10px] text-emerald-400">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              Government Dept (Procurement Officer)
+            <span className="text-xs font-bold text-slate-900">{departmentName}</span>
+            <div className="flex items-center justify-end gap-1.5 text-[11px] text-emerald-700 font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
+              Procurement Officer (Verified)
             </div>
           </div>
 
-          <div className="h-8 w-px bg-slate-800 hidden sm:block" />
+          <div className="h-8 w-px bg-slate-200 hidden sm:block" />
 
           {/* Public verify quick check link */}
           <Link
             href="/verify/demo"
-            className="hidden lg:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-slate-700/60 bg-slate-900/60 text-[11px] text-slate-400 hover:text-slate-200 hover:border-slate-600 transition-colors"
+            className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-300 bg-slate-50 text-xs font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 transition-colors"
             title="Public Verification Portal"
           >
-            <ShieldCheck className="h-3.5 w-3.5 text-cyan-400" />
+            <ShieldCheck className="h-3.5 w-3.5 text-blue-600" />
             <span>Audit / Verify</span>
           </Link>
 
           <Link
             href="/login"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors border border-transparent hover:border-rose-500/20"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:text-rose-700 hover:bg-rose-50 transition-colors border border-slate-200 hover:border-rose-200"
             title="Switch Role or Logout"
           >
             <LogOut className="h-3.5 w-3.5" />

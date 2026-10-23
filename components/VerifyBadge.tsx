@@ -26,19 +26,19 @@ export default function VerifyBadge({
 
   return (
     <div
-      className={`inline-flex items-center rounded-full border backdrop-blur-md ${sizeClasses} ${
+      className={`inline-flex items-center rounded-full border shadow-xs ${sizeClasses} ${
         verified
-          ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30 shadow-sm shadow-emerald-500/20'
-          : 'bg-rose-500/10 text-rose-400 border-rose-500/30 shadow-sm shadow-rose-500/20'
+          ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
+          : 'bg-rose-50 text-rose-800 border-rose-300'
       }`}
     >
       {verified ? (
-        <ShieldCheck className={`${iconSizes} text-emerald-400`} />
+        <ShieldCheck className={`${iconSizes} text-emerald-700`} />
       ) : (
-        <ShieldAlert className={`${iconSizes} text-rose-400`} />
+        <ShieldAlert className={`${iconSizes} text-rose-700`} />
       )}
       {showLabel && (
-        <span>
+        <span className="font-semibold text-slate-900">
           {verified ? 'Tamper-Evident: VERIFIED' : 'Integrity Mismatch: CHANGED'}
         </span>
       )}

@@ -1,7 +1,7 @@
 # NavSetu
 
-**24-Hour Hackathon Build Plan (v3: Next.js + Supabase, with a tamper-evident justification PDF)**
-Smart India Hackathon 2026 | Features, screens, stack, workflow, structure, deployment
+**24-Hour Build Plan (v3: Next.js + Supabase, with a tamper-evident justification PDF)**
+Features, screens, stack, workflow, structure, deployment
 
 ---
 

@@ -1,8 +1,21 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
+import { getApplicationsForProblem, getProblemById } from '@/lib/departmentStore';
 
-// TODO: implement (app/api/problems/[id]/applications/route.ts)
+export async function GET(
+  _request: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id: problemId } = await context.params;
 
-export async function GET() {
-  return NextResponse.json({ error: 'Not implemented' }, { status: 501 });
+    const problem = getProblemById(problemId);
+    if (!problem) {
+      return NextResponse.json({ error: 'Problem not found' }, { status: 404 });
+    }
+
+    const applications = getApplicationsForProblem(problemId);
+    return NextResponse.json({ ok: true, problem, applications });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message || 'Failed to fetch applications' }, { status: 500 });
+  }
 }
-

@@ -79,7 +79,7 @@ export default function LandingPage() {
 
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-zinc-950 tracking-tight max-w-4xl mx-auto leading-tight">
             From Pilot Validation to Direct Contract in{' '}
-            <span className="underline decoration-zinc-400 underline-offset-8">9 Days</span>, Not 2 Years.
+            <span className="underline decoration-zinc-400 underline-offset-8">Days</span>, Not Months.
           </h1>
 
           <p className="mt-6 text-lg sm:text-xl text-zinc-600 max-w-2xl mx-auto leading-relaxed">
@@ -125,7 +125,7 @@ export default function LandingPage() {
             </div>
             <div className="p-5 rounded-2xl bg-zinc-950 text-white border border-black shadow-lg">
               <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">NavSetu Pipeline</span>
-              <p className="text-2xl font-black text-white mt-1">9 Days Conversion</p>
+              <p className="text-2xl font-black text-white mt-1">30 to 60 Days Conversion</p>
               <p className="text-xs text-zinc-400 mt-1">Automated conversion under GFR 149(viii)</p>
             </div>
             <div className="p-5 rounded-2xl bg-white border border-zinc-200 shadow-xs">
